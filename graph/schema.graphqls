@@ -1,0 +1,74 @@
+# User schema (Simplified)
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  carts: [Cart]!
+}
+
+# Storing Item data
+type Item {
+  sku: ID!
+  name: String!
+  price: Float!
+  quantity: Int!
+  created_at: String!
+  updated_at: String!
+  deleted_at: String!
+}
+
+# Storing User Items before continuing to order
+type Cart {
+  id: ID!
+  user_id: ID!
+  item_id: ID!
+  quantity: Int!
+  updated_at: String!
+}
+
+# Storing User orders (Simplified)
+type Order {
+  id: ID!
+  user_id: ID!
+  created_at: String!
+  paid_at: String!
+  payment_method: String!
+}
+
+# Storing multiple items in one order (with price, because stock price can be changed.)
+type OrderDetail {
+  order_id: ID!
+  item_id: ID!
+  quantity: Int!
+  price: Float!
+}
+
+input NewUser {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input NewItem {
+  sku: ID!
+  name: String!
+  price: Float!
+  quantity: Int!
+}
+
+type Query {
+  login: User!
+  items: [Item]!
+}
+
+type Mutation {
+  createUser(input: NewUser!): User!
+  createItem(input: NewItem!): Item!
+
+  # Because we don't have JWT / authorization method, directly pass User ID with Item ID
+  addCart(userId: ID!, itemSku: ID!, quantity: Int!): Boolean!
+
+  # Because we don't have JWT / authorization method, directly pass User ID to checkout
+  checkout(userId: ID!): [Order]!
+}
